@@ -7,17 +7,17 @@ const expenses = mongoose.Schema({
         required: true,
     },
     userID: {
-        type: Number, // gjaje qysh me ba foreign key
+        type: mongoose.Schema.Types.ObjectId, ref: 'Users', // foreign key me User.js
         required: true,
     },
 
     registeredDate: {
         type: Date,
-        default: new Date(),
+        default: Date.now,
         required: true,
     },
     type: {
-        type: Number, // foreign key me ExpenseType.js
+        type: mongoose.Schema.Types.ObjectId, ref: 'ExpenseType', // foreign key me ExpenseType.js
         required: true,
     },
     description: {

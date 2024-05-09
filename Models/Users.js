@@ -35,11 +35,10 @@ const userSchema = mongoose.Schema({
         required: true
     },
     role: {
-        type: Number, // foreign key me userRole.js
+        type: mongoose.Schema.Types.ObjectId, ref: 'userRole', // foreign key me userRole.js
         required: true,
     },
-    // foreign key me dit qysh bahet
 });
 
 
-module.exports = mongoose.model("user", userSchema);
+module.exports = mongoose.model("Users", userSchema);

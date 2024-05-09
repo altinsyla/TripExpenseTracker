@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const connectDB = (url) => {
-  mongoose.set("strictQuery", true);
+  mongoose.set("strict", true);
   return mongoose.connect(url);
 };
 

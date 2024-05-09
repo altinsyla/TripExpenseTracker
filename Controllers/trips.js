@@ -19,19 +19,6 @@ const getSingleTrip = async (req, res) => {
   }
 };
 
-// const createStudent = async (req, res) => {
-//     const student = req.body;
-//     const { firstname, lastname, idcard, subjects } = req.body;
-
-//     const newStudent = new Student(student);
-//     try {
-//         await newStudent.save();
-//         res.status(201).json(newStudent);
-//     } catch (error) {
-//         res.status(409).json({ message: error.message });
-//     }
-// };
-
 const createTrip = async (req, res) => {
   const {
     tripID,

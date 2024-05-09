@@ -2,7 +2,7 @@ const Users = require("../Models/Users");
 
 const getAllUsers = async (req, res) => {
   try {
-    const users = await Student.find();
+    const users = await Users.find();
     res.status(200).json(users);
   } catch (error) {
     res.status(404).json({ message: error.message });
@@ -12,25 +12,12 @@ const getAllUsers = async (req, res) => {
 const getSingleUser = async (req, res) => {
   const id = req.params.id;
   try {
-    const users = await Users.findOne({ _id: id });
-    res.status(200).json(users);
+    const user = await Users.findOne({ _id: id });
+    res.status(200).json(user);
   } catch (error) {
     res.status(404).json({ message: error.message });
   }
 };
-
-// const createStudent = async (req, res) => {
-//     const student = req.body;
-//     const { firstname, lastname, idcard, subjects } = req.body;
-
-//     const newStudent = new Student(student);
-//     try {
-//         await newStudent.save();
-//         res.status(201).json(newStudent);
-//     } catch (error) {
-//         res.status(409).json({ message: error.message });
-//     }
-// };
 
 const createUser = async (req, res) => {
   const {
@@ -38,14 +25,12 @@ const createUser = async (req, res) => {
     firstname,
     lastname,
     email,
-    passoword,
+    password,
     registerDate,
     country,
     city,
     role,
   } = req.body;
-
-  console.log(req.body);
 
   // Check for required fields
   if (
@@ -53,8 +38,7 @@ const createUser = async (req, res) => {
     !firstname ||
     !lastname ||
     !email ||
-    !passoword ||
-    !registerDate ||
+    !password ||
     !country ||
     !city ||
     !role
@@ -63,28 +47,28 @@ const createUser = async (req, res) => {
   }
 
   try {
-    // Check for duplicate registration ID
-    const existingUserByRoll = await Users.findOne({ userID });
-    if (existingUserByRoll) {
+    // Check for duplicate userID
+    const existingUser = await Users.findOne({ userID });
+    if (existingUser) {
       return res
         .status(409)
-        .json({ message: "User with this idcard number already exists" });
+        .json({ message: "User with this userID already exists" });
     }
 
-    // Create a new student object with the provided data
+    // Create a new user object with the provided data
     const newUser = await Users.create({
       userID,
       firstname,
       lastname,
       email,
-      passoword,
-      registerDate: new Date(),
+      password,
+      registerDate: registerDate || new Date(), // Default to current date or use provided date
       country,
       city,
       role,
     });
 
-    // Respond with the created student object
+    // Respond with the created user object
     res.status(201).json(newUser);
   } catch (error) {
     // Handle internal server errors
@@ -95,11 +79,9 @@ const createUser = async (req, res) => {
 const updateUser = async (req, res) => {
   const id = req.params.id;
   try {
-    const updateUser = await Users.findOneAndUpdate(
-      { userID: id },
-      req.body,
-      { new: true }
-    );
+    const updateUser = await Users.findOneAndUpdate({ _id: id }, req.body, {
+      new: true,
+    });
     res.status(200).json(updateUser);
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -109,7 +91,7 @@ const updateUser = async (req, res) => {
 const deleteUser = async (req, res) => {
   const id = req.params.id;
   try {
-    await Users.findOneAndDelete({ userID: id });
+    await Users.findOneAndDelete({ _id: id });
     res.status(204).json({ message: "User deleted successfully" });
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -121,5 +103,5 @@ module.exports = {
   getSingleUser,
   createUser,
   updateUser,
-  deleteUser
+  deleteUser,
 };
