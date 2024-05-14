@@ -15,7 +15,13 @@ app.use('/expenses', expenseRouter);
 const userRoleRouter = require('./Routes/userRole');
 app.use('/userRole', userRoleRouter);
 const expenseTypeRouter = require('./Routes/expenseType');
-app.use('./expenseType', expenseTypeRouter);
+app.use('/expenseType', expenseTypeRouter);
+const budgetRouter = require('./Routes/budget');
+app.use('/budget', budgetRouter);
+const transportRouter = require('./Routes/transport');
+app.use('/transport', transportRouter);
+const feedbackRouter = require('./Routes/feedback');
+app.use('/feedback', feedbackRouter);
 
 // MongoDB connection string
 const mongoURI = 'mongodb+srv://altinsyla:altinsyla123@tripexpensetracker.3ttydnv.mongodb.net/?retryWrites=true&w=majority&appName=TripExpenseTracker';
