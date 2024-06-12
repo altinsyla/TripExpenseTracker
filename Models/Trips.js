@@ -1,35 +1,34 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const Trips = mongoose.Schema({
-    tripID: {
-        type: Number,
-        required: true,
-    },
-    name : {
-        type: String,
-        required: true,
-    },
-    participants: {
-        type: mongoose.Schema.Types.ObjectId, ref: 'Users', // foreign key me Users.js
-        required: true,
-    },
-    startDate : {
-        type: Date,
-        required: true,
-    },
-    endDate : {
-        type: Date,
-        required: true,
-    },
-    location : {
-        type: String,
-        required: true,
-    },
-    description: {
-        type: String,
-        // munet me kan NULL
-    },
-})
-
+  name: {
+    type: String,
+    required: true,
+  },
+  startDate: {
+    type: Date,
+    required: true,
+  },
+  endDate: {
+    type: Date,
+    required: true,
+  },
+  location: {
+    type: String,
+    required: true,
+  },
+  description: {
+    type: String,
+  },
+  budget: {
+    type: Number,
+    required: true,
+  },
+  transportType: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Transport",
+    required: true,
+  },
+});
 
 module.exports = mongoose.model("Trips", Trips);

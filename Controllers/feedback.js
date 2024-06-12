@@ -1,4 +1,4 @@
-const Feedback = require('../Models/Feedback');
+const Feedback = require("../Models/Feedback");
 
 const getAllFeedbacks = async (req, res) => {
   try {
@@ -20,43 +20,31 @@ const getSingleFeedback = async (req, res) => {
 };
 
 const createFeedback = async (req, res) => {
-  const {
-    feedbackID,
-    userID,
-    description
-  } = req.body;
+  const { userID, description, trip } = req.body;
 
   console.log(req.body);
 
-  // Check for required fields
-  if (
-    !feedbackID ||
-    !userID ||
-    !description
-  ) {
+  if (!userID || !description || !trip) {
     return res.status(400).json({ message: "Required fields are missing" });
   }
 
   try {
-    // Check for duplicate registration ID
-    const existingFeedbackByRoll = await Feedback.findOne({ feedbackID });
+    const id = req.params.id;
+    const existingFeedbackByRoll = await Feedback.findOne({ id });
     if (existingFeedbackByRoll) {
       return res
         .status(409)
         .json({ message: "Feedback with this id number already exists" });
     }
 
-    // Create a new student object with the provided data
     const newFeedback = await Feedback.create({
-        feedbackID,
-        userID,
-        description,
+      userID,
+      description,
+      trip,
     });
 
-    // Respond with the created student object
     res.status(201).json(newFeedback);
   } catch (error) {
-    // Handle internal server errors
     res.status(500).json({ message: error.message });
   }
 };
@@ -64,9 +52,13 @@ const createFeedback = async (req, res) => {
 const updateFeedback = async (req, res) => {
   const id = req.params.id;
   try {
-    const updateFeedback = await Feedback.findOneAndUpdate({ _id: id }, req.body, {
-      new: true,
-    });
+    const updateFeedback = await Feedback.findOneAndUpdate(
+      { _id: id },
+      req.body,
+      {
+        new: true,
+      }
+    );
     res.status(200).json(updateFeedback);
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -84,9 +76,9 @@ const deleteFeedback = async (req, res) => {
 };
 
 module.exports = {
-    getAllFeedbacks,
-    getSingleFeedback,
-    createFeedback,
-    updateFeedback,
-    deleteFeedback
+  getAllFeedbacks,
+  getSingleFeedback,
+  createFeedback,
+  updateFeedback,
+  deleteFeedback,
 };

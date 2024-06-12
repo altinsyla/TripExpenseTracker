@@ -1,4 +1,4 @@
-const Budget = require('../Models/Budget');
+const Budget = require("../Models/Budget");
 
 const getAllBudgets = async (req, res) => {
   try {
@@ -20,27 +20,15 @@ const getSingleBudget = async (req, res) => {
 };
 
 const createBudget = async (req, res) => {
-  const {
-    budgetID,
-    tripID,
-    userID,
-    budget
-  } = req.body;
+  const { budgetID, tripID, userID, budget } = req.body;
 
   console.log(req.body);
 
-  // Check for required fields
-  if (
-    !budgetID ||
-    !tripID ||
-    !userID ||
-    !budget
-  ) {
+  if (!budgetID || !tripID || !userID || !budget) {
     return res.status(400).json({ message: "Required fields are missing" });
   }
 
   try {
-    // Check for duplicate registration ID
     const existingBudgetByRoll = await Budget.findOne({ budgetID });
     if (existingBudgetByRoll) {
       return res
@@ -48,18 +36,15 @@ const createBudget = async (req, res) => {
         .json({ message: "Budget with this id number already exists" });
     }
 
-    // Create a new student object with the provided data
     const newBudget = await Budget.create({
-        budgetID,
-        tripID,
-        userID,
-        budget,
+      budgetID,
+      tripID,
+      userID,
+      budget,
     });
 
-    // Respond with the created student object
     res.status(201).json(newBudget);
   } catch (error) {
-    // Handle internal server errors
     res.status(500).json({ message: error.message });
   }
 };
@@ -87,9 +72,9 @@ const deleteBudget = async (req, res) => {
 };
 
 module.exports = {
-    getAllBudgets,
-    getSingleBudget,
-    createBudget,
-    updateBudget,
-    deleteBudget
+  getAllBudgets,
+  getSingleBudget,
+  createBudget,
+  updateBudget,
+  deleteBudget,
 };

@@ -10,9 +10,9 @@ const getAllUsers = async (req, res) => {
 };
 
 const getSingleUser = async (req, res) => {
-  const id = req.params.id;
+  const { id } = req.params.id;
   try {
-    const user = await Users.findOne({ _id: id });
+    const user = await Users.findOne(id);
     res.status(200).json(user);
   } catch (error) {
     res.status(404).json({ message: error.message });
@@ -21,9 +21,9 @@ const getSingleUser = async (req, res) => {
 
 const createUser = async (req, res) => {
   const {
-    userID,
-    firstname,
-    lastname,
+    username,
+    firstName,
+    lastName,
     email,
     password,
     registerDate,
@@ -32,11 +32,10 @@ const createUser = async (req, res) => {
     role,
   } = req.body;
 
-  // Check for required fields
   if (
-    !userID ||
-    !firstname ||
-    !lastname ||
+    !username ||
+    !firstName ||
+    !lastName ||
     !email ||
     !password ||
     !country ||
@@ -47,31 +46,27 @@ const createUser = async (req, res) => {
   }
 
   try {
-    // Check for duplicate userID
-    const existingUser = await Users.findOne({ userID });
+    const existingUser = await Users.findOne({ username });
     if (existingUser) {
       return res
         .status(409)
         .json({ message: "User with this userID already exists" });
     }
 
-    // Create a new user object with the provided data
     const newUser = await Users.create({
-      userID,
-      firstname,
-      lastname,
+      username,
+      firstName,
+      lastName,
       email,
       password,
-      registerDate: registerDate || new Date(), // Default to current date or use provided date
+      registerDate: registerDate || new Date(),
       country,
       city,
       role,
     });
 
-    // Respond with the created user object
     res.status(201).json(newUser);
   } catch (error) {
-    // Handle internal server errors
     res.status(500).json({ message: error.message });
   }
 };
