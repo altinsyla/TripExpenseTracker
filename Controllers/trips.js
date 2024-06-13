@@ -71,6 +71,17 @@ const createTrip = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+const getUpcomingTrips = async (req, res) => {
+  try {
+      // Find trips where startDate is greater than current date
+      const currentDate = new Date();
+      const upcomingTrips = await Trips.find({ startDate: { $gt: currentDate } });
+
+      res.json(upcomingTrips);
+  } catch (err) {
+      res.status(500).json({ message: err.message });
+  }
+};
 
 const updateTrip = async (req, res) => {
   const id = req.params.id;
@@ -83,6 +94,10 @@ const updateTrip = async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 };
+
+
+
+
 
 const deleteTrip = async (req, res) => {
   const id = req.params.id;
@@ -100,4 +115,5 @@ module.exports = {
   createTrip,
   updateTrip,
   deleteTrip,
+  getUpcomingTrips,
 };

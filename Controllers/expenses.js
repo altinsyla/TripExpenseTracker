@@ -62,6 +62,7 @@ const createExpense = async (req, res) => {
   }
 };
 
+
 const updateExpense = async (req, res) => {
   const { id } = req.params;
   try {

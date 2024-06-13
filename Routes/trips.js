@@ -7,5 +7,7 @@ router.get("/:id", tripsController.getSingleTrip);
 router.post("/", tripsController.createTrip);
 router.patch("/:id", tripsController.updateTrip);
 router.delete("/:id", tripsController.deleteTrip);
+router.get("/upcomingtrips", tripsController.getUpcomingTrips);
+
 
 module.exports = router;
