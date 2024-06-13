@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const Trips = mongoose.Schema({
     tripID: {
@@ -27,6 +27,5 @@ const Trips = mongoose.Schema({
         // munet me kan NULL
     },
 })
-
 
 module.exports = mongoose.model("Trips", Trips);

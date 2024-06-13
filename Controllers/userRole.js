@@ -1,4 +1,4 @@
-const userRole = require('../Models/userRole');
+const userRole = require("../Models/userRole");
 
 const getAllUserRoles = async (req, res) => {
   try {
@@ -20,36 +20,25 @@ const getSingleRole = async (req, res) => {
 };
 
 const createRole = async (req, res) => {
-  const {
-    roleID,
-    roleName,
-  } = req.body;
+  const { roleName } = req.body;
 
 
-  // Check for required fields
-  if (
-    !roleID ||
-    !roleName
-  ) {
+  if (!roleName) {
     return res.status(400).json({ message: "Required fields are missing" });
   }
 
   try {
-    // Check for duplicate registration ID
-    const existingRoleByRoll = await userRole.findOne({ roleID });
+    const existingRoleByRoll = await userRole.findOne({ roleName });
     if (existingRoleByRoll) {
       return res
         .status(409)
         .json({ message: "User Role with this idcard number already exists" });
     }
 
-    // Create a new student object with the provided data
     const newRole = await userRole.create({
-        roleID,
-        roleName,
+      roleName,
     });
 
-    // Respond with the created student object
     res.status(201).json(newRole);
   } catch (error) {
     // Handle internal server errors
@@ -60,14 +49,10 @@ const createRole = async (req, res) => {
 const updateRole = async (req, res) => {
   const id = req.params.id;
   try {
-    const updateTrip = await userRole.findOneAndUpdate(
-      { roleID: id },
-      req.body,
-      {
-        new: true,
-      }
-    );
-    res.status(200).json(updateRole);
+    const updateRole = await userRole.findOneAndUpdate({ _id: id }, req.body, {
+      new: true,
+    });
+    res.status(200).json({ message: "User Role updated successfully!" });
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
@@ -76,7 +61,7 @@ const updateRole = async (req, res) => {
 const deleteRole = async (req, res) => {
   const id = req.params.id;
   try {
-    await userRole.findOneAndDelete({ roleID: id });
+    await userRole.findOneAndDelete({ _id: id });
     res.status(204).json({ message: "User Role deleted successfully" });
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -84,9 +69,9 @@ const deleteRole = async (req, res) => {
 };
 
 module.exports = {
-    getAllUserRoles,
-    getSingleRole,
-    createRole,
-    updateRole,
-    deleteRole,
+  getAllUserRoles,
+  getSingleRole,
+  createRole,
+  updateRole,
+  deleteRole,
 };

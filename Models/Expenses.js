@@ -1,5 +1,4 @@
-const mongoose = require('mongoose');
-// const User = require('./User');
+const mongoose = require("mongoose");
 
 const expenses = mongoose.Schema({
     expenseID: {

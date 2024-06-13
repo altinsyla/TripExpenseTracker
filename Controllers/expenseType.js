@@ -1,4 +1,4 @@
-const ExpenseType = require('../Models/ExpenseType');
+const ExpenseType = require("../Models/ExpenseType");
 
 const getAllExpenseTypes = async (req, res) => {
   try {
@@ -19,37 +19,16 @@ const getSingleExpenseType = async (req, res) => {
   }
 };
 
-// const createStudent = async (req, res) => {
-//     const student = req.body;
-//     const { firstname, lastname, idcard, subjects } = req.body;
-
-//     const newStudent = new Student(student);
-//     try {
-//         await newStudent.save();
-//         res.status(201).json(newStudent);
-//     } catch (error) {
-//         res.status(409).json({ message: error.message });
-//     }
-// };
-
 const createExpenseType = async (req, res) => {
-  const {
-    typeID,
-    typeName,
-  } = req.body;
+  const { typeID, typeName } = req.body;
 
   console.log(req.body);
 
-  // Check for required fields
-  if (
-    !typeID ||
-    !typeName 
-  ) {
+  if (!typeID || !typeName) {
     return res.status(400).json({ message: "Required fields are missing" });
   }
 
   try {
-    // Check for duplicate registration ID
     const existingExpenseTypeByRoll = await ExpenseType.findOne({ typeID });
     if (existingExpenseTypeByRoll) {
       return res
@@ -57,16 +36,13 @@ const createExpenseType = async (req, res) => {
         .json({ message: "Expense type with this typeID already exists" });
     }
 
-    // Create a new student object with the provided data
-    const newExpenseType = await Expenses.create({
-        roleID,
-        roleName,
+    const newExpenseType = await ExpenseType.create({
+      typeID,
+      typeName,
     });
 
-    // Respond with the created student object
     res.status(201).json(newExpenseType);
   } catch (error) {
-    // Handle internal server errors
     res.status(500).json({ message: error.message });
   }
 };
@@ -74,9 +50,13 @@ const createExpenseType = async (req, res) => {
 const updateExpenseType = async (req, res) => {
   const id = req.params.id;
   try {
-    const updateExpenseType = await ExpenseType.findOneAndUpdate({ typeID: id }, req.body, {
-      new: true,
-    });
+    const updateExpenseType = await ExpenseType.findOneAndUpdate(
+      { typeID: id },
+      req.body,
+      {
+        new: true,
+      }
+    );
     res.status(200).json(updateExpenseType);
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -94,9 +74,9 @@ const deleteExpenseType = async (req, res) => {
 };
 
 module.exports = {
-    getAllExpenseTypes,
-    getSingleExpenseType,
-    createExpenseType,
-    updateExpenseType,
-    deleteExpenseType,
+  getAllExpenseTypes,
+  getSingleExpenseType,
+  createExpenseType,
+  updateExpenseType,
+  deleteExpenseType,
 };

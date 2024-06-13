@@ -1,4 +1,6 @@
-const Feedback = require('../Models/Feedback');
+const Feedback = require("../Models/Feedback");
+const Users = require("../Models/Users");
+const Trips = require("../Models/Trips");
 
 const getAllFeedbacks = async (req, res) => {
   try {
@@ -20,43 +22,31 @@ const getSingleFeedback = async (req, res) => {
 };
 
 const createFeedback = async (req, res) => {
-  const {
-    feedbackID,
-    userID,
-    description
-  } = req.body;
+  const { userID, description, trip } = req.body;
 
   console.log(req.body);
 
-  // Check for required fields
-  if (
-    !feedbackID ||
-    !userID ||
-    !description
-  ) {
+  if (!userID || !description || !trip) {
     return res.status(400).json({ message: "Required fields are missing" });
   }
 
   try {
-    // Check for duplicate registration ID
-    const existingFeedbackByRoll = await Feedback.findOne({ feedbackID });
+    const id = req.params.id;
+    const existingFeedbackByRoll = await Feedback.findOne({ id });
     if (existingFeedbackByRoll) {
       return res
         .status(409)
         .json({ message: "Feedback with this id number already exists" });
     }
 
-    // Create a new student object with the provided data
     const newFeedback = await Feedback.create({
-        feedbackID,
-        userID,
-        description,
+      userID,
+      description,
+      trip,
     });
 
-    // Respond with the created student object
     res.status(201).json(newFeedback);
   } catch (error) {
-    // Handle internal server errors
     res.status(500).json({ message: error.message });
   }
 };
@@ -64,9 +54,13 @@ const createFeedback = async (req, res) => {
 const updateFeedback = async (req, res) => {
   const id = req.params.id;
   try {
-    const updateFeedback = await Feedback.findOneAndUpdate({ _id: id }, req.body, {
-      new: true,
-    });
+    const updateFeedback = await Feedback.findOneAndUpdate(
+      { _id: id },
+      req.body,
+      {
+        new: true,
+      }
+    );
     res.status(200).json(updateFeedback);
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -83,10 +77,47 @@ const deleteFeedback = async (req, res) => {
   }
 };
 
+//Ky raport i gjen feedbacks nga nje user per nje trip te caktum
+const getSummaryReport = async (req, res) => {
+  try {
+    const totalFeedbacks = await Feedback.countDocuments({});
+    
+    const feedbackByTrip = await Feedback.aggregate([
+      { $group: { _id: "$trip", count: { $sum: 1 } } }
+    ]);
+
+    const feedbackByUser = await Feedback.aggregate([
+      { $group: { _id: "$userID", count: { $sum: 1 } } }
+    ]);
+
+    res.status(200).json({
+      totalFeedbacks,
+      feedbackByTrip,
+      feedbackByUser
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// Ky Raport i gjen feedbacks nga useri per ni trip por jep te gjitha te dhenat e detajuara
+const getDetailedReport = async (req, res) => {
+  try {
+    const feedbacks = await Feedback.find().populate('userID trip', 'username name');
+
+    res.status(200).json({
+      feedbacks
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 module.exports = {
-    getAllFeedbacks,
-    getSingleFeedback,
-    createFeedback,
-    updateFeedback,
-    deleteFeedback
+  getAllFeedbacks,
+  getSingleFeedback,
+  createFeedback,
+  updateFeedback,
+  deleteFeedback,
+  getSummaryReport,
+  getDetailedReport,
 };

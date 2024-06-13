@@ -13,7 +13,7 @@ const getAllTrips = async (req, res) => {
 const getSingleTrip = async (req, res) => {
   const id = req.params.id;
   try {
-    const trip = await Trips.findOne({ _id: id });
+    const trip = await Trips.findOne({ tripID: id });
     res.status(200).json(trip);
   } catch (error) {
     res.status(404).json({ message: error.message });
@@ -24,28 +24,29 @@ const createTrip = async (req, res) => {
   const {
     tripID,
     name,
-    participants,
     startDate,
     endDate,
     location,
     description,
+    budget,
+    transportType,
   } = req.body;
 
   // Check for required fields
   if (
     !tripID ||
     !name ||
-    !participants ||
     !startDate ||
     !endDate ||
     !location ||
-    !description
+    !description ||
+    !budget ||
+    !transportType
   ) {
     return res.status(400).json({ message: "Required fields are missing" });
   }
 
   try {
-    // Check for duplicate registration ID
     const existingTripByRoll = await Trips.findOne({ tripID });
     if (existingTripByRoll) {
       return res
@@ -53,22 +54,32 @@ const createTrip = async (req, res) => {
         .json({ message: "Trip with this idcard number already exists" });
     }
 
-    // Create a new student object with the provided data
     const newTrip = await Trips.create({
       tripID,
       name,
-      participants,
       startDate,
       endDate,
       location,
       description,
+      budget,
+      transportType,
     });
 
-    // Respond with the created student object
     res.status(201).json(newTrip);
   } catch (error) {
     // Handle internal server errors
     res.status(500).json({ message: error.message });
+  }
+};
+const getUpcomingTrips = async (req, res) => {
+  try {
+      // Find trips where startDate is greater than current date
+      const currentDate = new Date();
+      const upcomingTrips = await Trips.find({ startDate: { $gt: currentDate } });
+
+      res.json(upcomingTrips);
+  } catch (err) {
+      res.status(500).json({ message: err.message });
   }
 };
 
@@ -83,6 +94,10 @@ const updateTrip = async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 };
+
+
+
+
 
 const deleteTrip = async (req, res) => {
   const id = req.params.id;
@@ -140,4 +155,5 @@ module.exports = {
   getTripExpenses,
   getExpensesFromSingleUser,
   getExpenseCategories,
+  getUpcomingTrips,
 };
