@@ -10,14 +10,17 @@ const expenses = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId, ref: 'Users', // foreign key me User.js
         required: true,
     },
-
+    tripID:{
+        type: mongoose.Schema.Types.ObjectId, ref: 'Trips', // foreign key me User.js
+        required: true, 
+    },
     registeredDate: {
         type: Date,
         default: Date.now,
         required: true,
     },
     type: {
-        type: mongoose.Schema.Types.ObjectId, ref: 'ExpenseType', // foreign key me ExpenseType.js
+        type: mongoose.Schema.Types.ObjectId, ref: 'ExpenseTypes', // foreign key me ExpenseType.js
         required: true,
     },
     description: {

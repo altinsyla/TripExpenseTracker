@@ -9,10 +9,7 @@ const Trips = mongoose.Schema({
         type: String,
         required: true,
     },
-    participants: {
-        type: mongoose.Schema.Types.ObjectId, ref: 'Users', // foreign key me Users.js
-        required: true,
-    },
+    participants: [{ type: mongoose.Schema.Types.ObjectId, ref: "Users", required: true }],
     startDate : {
         type: Date,
         required: true,

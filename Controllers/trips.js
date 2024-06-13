@@ -1,4 +1,5 @@
 const Trips = require("../Models/Trips");
+const Expenses = require("../Models/Expenses");
 
 const getAllTrips = async (req, res) => {
   try {
@@ -30,8 +31,6 @@ const createTrip = async (req, res) => {
     description,
   } = req.body;
 
-  console.log(req.body);
-
   // Check for required fields
   if (
     !tripID ||
@@ -56,13 +55,13 @@ const createTrip = async (req, res) => {
 
     // Create a new student object with the provided data
     const newTrip = await Trips.create({
-        tripID,
-        name,
-        participants,
-        startDate,
-        endDate,
-        location,
-        description,
+      tripID,
+      name,
+      participants,
+      startDate,
+      endDate,
+      location,
+      description,
     });
 
     // Respond with the created student object
@@ -76,13 +75,9 @@ const createTrip = async (req, res) => {
 const updateTrip = async (req, res) => {
   const id = req.params.id;
   try {
-    const updateTrip = await Trips.findOneAndUpdate(
-      { tripID: id },
-      req.body,
-      {
-        new: true,
-      }
-    );
+    const updateTrip = await Trips.findOneAndUpdate({ tripID: id }, req.body, {
+      new: true,
+    });
     res.status(200).json(updateTrip);
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -99,10 +94,50 @@ const deleteTrip = async (req, res) => {
   }
 };
 
+const getTripExpenses = async (req, res) => {
+  const tripid = req.params.id;
+  try {
+    const expenses = await Expenses.find({ tripID: tripid });
+    res.status(200).json(expenses);
+  } catch (error) {
+    res.status(404).json({ message: error.message });
+  }
+};
+
+const getExpensesFromSingleUser = async (req, res) => {
+  const userID = req.params.id;
+  const tripID = req.body.tripID;
+
+  try {
+    const expenses = await Expenses.find({ tripID: tripID, userID: userID });
+
+    res.status(200).json(expenses);
+  } catch (error) {
+    res.status(404).json({ message: error.message });
+  }
+};
+
+const getExpenseCategories = async (req, res) => {
+  const tripID = req.params.id;
+
+  try {
+    const expenses = await Expenses.find({ tripID: tripID }).populate('type');
+    const expenseTypes = expenses.map(expense => expense.type.typeName);
+    
+    res.status(200).json(expenseTypes);
+  } catch (error) {
+    res.status(404).json({ message: error.message });
+  }
+};
+
+
 module.exports = {
   getAllTrips,
   getSingleTrip,
   createTrip,
   updateTrip,
   deleteTrip,
+  getTripExpenses,
+  getExpensesFromSingleUser,
+  getExpenseCategories,
 };

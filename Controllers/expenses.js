@@ -36,6 +36,7 @@ const createExpense = async (req, res) => {
   const {
     expenseID,
     userID,
+    tripID,
     registeredDate,
     type,
     description,
@@ -49,6 +50,7 @@ const createExpense = async (req, res) => {
   if (
     !expenseID ||
     !userID ||
+    !tripID ||
     !registeredDate ||
     !type ||
     !description ||
@@ -71,6 +73,7 @@ const createExpense = async (req, res) => {
     const newExpense = await Expenses.create({
         expenseID,
         userID,
+        tripID,
         registeredDate: new Date(),
         type,
         description,

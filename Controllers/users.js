@@ -1,4 +1,6 @@
 const Users = require("../Models/Users");
+const Expenses = require("../Models/Expenses");
+const Trips = require("../Models/Trips");
 
 const getAllUsers = async (req, res) => {
   try {
@@ -98,10 +100,25 @@ const deleteUser = async (req, res) => {
   }
 };
 
+
+const getAllUserTrips = async (req,res) => {
+  const userID = req.params.id;
+
+  try {
+    const trips = await Trips.find({participants: userID});
+
+    res.status(200).json(trips);
+  } catch (error) {
+    res.status(404).json({ message: error.message });
+  }
+}
+
+
 module.exports = {
   getAllUsers,
   getSingleUser,
   createUser,
   updateUser,
   deleteUser,
+  getAllUserTrips,
 };

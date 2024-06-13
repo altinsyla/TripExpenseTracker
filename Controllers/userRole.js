@@ -25,7 +25,6 @@ const createRole = async (req, res) => {
     roleName,
   } = req.body;
 
-  console.log(req.body);
 
   // Check for required fields
   if (
