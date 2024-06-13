@@ -93,10 +93,28 @@ const deleteUser = async (req, res) => {
   }
 };
 
+const aggregateUsersByCountry = async (req, res) => {
+  try {
+    const userCountsByCountry = await Users.aggregate([
+      { $group: {
+          _id: "$country",
+          count: { $sum: 1 }
+        }
+      },
+      { $sort: { _id: 1 } } // Optional: Sort by country name ascending
+    ]);
+
+    res.status(200).json(userCountsByCountry);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 module.exports = {
   getAllUsers,
   getSingleUser,
   createUser,
   updateUser,
   deleteUser,
+  aggregateUsersByCountry,
 };
