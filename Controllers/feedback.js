@@ -1,4 +1,6 @@
 const Feedback = require("../Models/Feedback");
+const Users = require("../Models/Users");
+const Trips = require("../Models/Trips");
 
 const getAllFeedbacks = async (req, res) => {
   try {
@@ -75,10 +77,47 @@ const deleteFeedback = async (req, res) => {
   }
 };
 
+//Ky raport i gjen feedbacks nga nje user per nje trip te caktum
+const getSummaryReport = async (req, res) => {
+  try {
+    const totalFeedbacks = await Feedback.countDocuments({});
+    
+    const feedbackByTrip = await Feedback.aggregate([
+      { $group: { _id: "$trip", count: { $sum: 1 } } }
+    ]);
+
+    const feedbackByUser = await Feedback.aggregate([
+      { $group: { _id: "$userID", count: { $sum: 1 } } }
+    ]);
+
+    res.status(200).json({
+      totalFeedbacks,
+      feedbackByTrip,
+      feedbackByUser
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// Ky Raport i gjen feedbacks nga useri per ni trip por jep te gjitha te dhenat e detajuara
+const getDetailedReport = async (req, res) => {
+  try {
+    const feedbacks = await Feedback.find().populate('userID trip', 'username name');
+
+    res.status(200).json({
+      feedbacks
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 module.exports = {
   getAllFeedbacks,
   getSingleFeedback,
   createFeedback,
   updateFeedback,
   deleteFeedback,
+  getSummaryReport,
+  getDetailedReport,
 };
