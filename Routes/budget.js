@@ -7,5 +7,6 @@ router.get("/:id", budgetController.getSingleBudget);
 router.post("/", budgetController.createBudget);
 router.patch("/:id", budgetController.updateBudget);
 router.delete("/:id", budgetController.deleteBudget);
+router.get("/report/budgetpertrip", budgetController.getBudgetSpentPerTrip);
 
 module.exports = router;
