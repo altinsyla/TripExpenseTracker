@@ -21,7 +21,6 @@ const getSingleExpense = async (req, res) => {
 
 const createExpense = async (req, res) => {
   const {
-    expenseID,
     userID,
     tripID,
     registeredDate,
@@ -54,7 +53,6 @@ const createExpense = async (req, res) => {
     }
 
     const newExpense = await Expenses.create({
-        expenseID,
         userID,
         tripID,
         registeredDate: new Date(),

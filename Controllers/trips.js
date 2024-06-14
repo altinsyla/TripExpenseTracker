@@ -71,15 +71,16 @@ const createTrip = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
 const getUpcomingTrips = async (req, res) => {
   try {
       // gjen tripet ku startdate esht me madhe se current date qe dmth ne te ardhmen
       const currentDate = new Date();
       const upcomingTrips = await Trips.find({ startDate: { $gt: currentDate } });
 
-      res.json(upcomingTrips);
+    res.json(upcomingTrips);
   } catch (err) {
-      res.status(500).json({ message: err.message });
+    res.status(400).json({ message: err.message });
   }
 };
 

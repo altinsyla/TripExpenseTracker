@@ -31,8 +31,7 @@ const createFeedback = async (req, res) => {
   }
 
   try {
-    const id = req.params.id;
-    const existingFeedbackByRoll = await Feedback.findOne({ id });
+    const existingFeedbackByRoll = await Feedback.findOne({ tripID: trip, userID: userID });
     if (existingFeedbackByRoll) {
       return res
         .status(409)
@@ -100,10 +99,10 @@ const getSummaryReport = async (req, res) => {
   }
 };
 
-// Ky Raport i gjen feedbacks nga useri per ni trip por jep te gjitha te dhenat e detajuara
+// Ky Raport merr te gjitha te dhenat e userit per feedbacks.
 const getDetailedReport = async (req, res) => {
   try {
-    const feedbacks = await Feedback.find().populate('userID trip', 'username name');
+    const feedbacks = await Feedback.find().populate('userID' && 'trip');
 
     res.status(200).json({
       feedbacks

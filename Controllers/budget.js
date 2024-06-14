@@ -20,16 +20,16 @@ const getSingleBudget = async (req, res) => {
 };
 
 const createBudget = async (req, res) => {
-  const { budgetID, tripID, userID, budget } = req.body;
+  const { tripID, userID, budget } = req.body;
 
   console.log(req.body);
 
-  if (!budgetID || !tripID || !userID || !budget) {
+  if (!tripID || !userID || !budget) {
     return res.status(400).json({ message: "Required fields are missing" });
   }
 
   try {
-    const existingBudgetByRoll = await Budget.findOne({ budgetID });
+    const existingBudgetByRoll = await Budget.findOne({tripID: tripID, userID: userID});  
     if (existingBudgetByRoll) {
       return res
         .status(409)
@@ -37,7 +37,6 @@ const createBudget = async (req, res) => {
     }
 
     const newBudget = await Budget.create({
-      budgetID,
       tripID,
       userID,
       budget,
@@ -75,26 +74,27 @@ const getBudgetSpentPerTrip = async (req, res) => {
   try {
     const budgetPerTrip = await Budget.aggregate([
       {
-        //krijon ni grup qe merr id e tripit edhe shumen e buxhetit
+        //krijon ni grup qe merr id e tripit edhe shumen e buxhetit nbaz te _id
         $group: {
           _id: "$tripID",
           totalBudget: { $sum: "$budget" },
-        }
+        },
       },
       {
-        //krijon ni kolon tre qe e merr id e tripit me emrin tripDetails
+        //lookup krijon ni array nga ni tabele qe bohet join
         $lookup: {
           from: "trips",
           localField: "_id", //qikjo e merr id e budgetit per qata o local
           foreignField: "_id", //qikjo e merr id e tripit dhe osht foreign
-          as: "tripDetails" // jon pjes e raportit 
-        }
+          as: "tripDetails", // jon pjes e raportit
+        },
       },
       {
+        // unwind e kontrollon a nese ka tripDetails pra nese ekziston
         $unwind: {
           path: "$tripDetails",
-          preserveNullAndEmptyArrays: true // Qikjo ndodh kur ska trip
-        }
+          preserveNullAndEmptyArrays: true, // Qikjo ndodh kur ska trip
+        },
       },
       {
         //i grupon si rezultat e qet lokacionin, daten e fillimit dhe daten e mbarimit
@@ -103,9 +103,9 @@ const getBudgetSpentPerTrip = async (req, res) => {
           location: "$tripDetails.location",
           startDate: "$tripDetails.startDate",
           endDate: "$tripDetails.endDate",
-          totalBudget: 1
-        }
-      }
+          totalBudget: 1,
+        },
+      },
     ]);
 
     if (!budgetPerTrip || budgetPerTrip.length === 0) {

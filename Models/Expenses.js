@@ -1,10 +1,6 @@
 const mongoose = require("mongoose");
 
 const expenses = mongoose.Schema({
-    expenseID: {
-        type: Number,
-        required: true,
-    },
     userID: {
         type: mongoose.Schema.Types.ObjectId, ref: 'Users', // foreign key me User.js
         required: true,

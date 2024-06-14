@@ -20,16 +20,16 @@ const getSingleExpenseType = async (req, res) => {
 };
 
 const createExpenseType = async (req, res) => {
-  const { typeID, typeName } = req.body;
+  const { typeName } = req.body;
 
   console.log(req.body);
 
-  if (!typeID || !typeName) {
+  if ( !typeName) {
     return res.status(400).json({ message: "Required fields are missing" });
   }
 
   try {
-    const existingExpenseTypeByRoll = await ExpenseType.findOne({ typeID });
+    const existingExpenseTypeByRoll = await ExpenseType.findOne({ typename: typeName });
     if (existingExpenseTypeByRoll) {
       return res
         .status(409)
@@ -37,7 +37,6 @@ const createExpenseType = async (req, res) => {
     }
 
     const newExpenseType = await ExpenseType.create({
-      typeID,
       typeName,
     });
 
@@ -51,7 +50,7 @@ const updateExpenseType = async (req, res) => {
   const id = req.params.id;
   try {
     const updateExpenseType = await ExpenseType.findOneAndUpdate(
-      { typeID: id },
+      { _id: id },
       req.body,
       {
         new: true,
@@ -66,7 +65,7 @@ const updateExpenseType = async (req, res) => {
 const deleteExpenseType = async (req, res) => {
   const id = req.params.id;
   try {
-    await ExpenseType.findOneAndDelete({ typeID: id });
+    await ExpenseType.findOneAndDelete({ _id: id });
     res.status(204).json({ message: "Expense Type deleted successfully" });
   } catch (error) {
     res.status(400).json({ message: error.message });
