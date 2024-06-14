@@ -73,7 +73,7 @@ const createTrip = async (req, res) => {
 };
 const getUpcomingTrips = async (req, res) => {
   try {
-      // Find trips where startDate is greater than current date
+      // gjen tripet ku startdate esht me madhe se current date qe dmth ne te ardhmen
       const currentDate = new Date();
       const upcomingTrips = await Trips.find({ startDate: { $gt: currentDate } });
 
@@ -94,10 +94,6 @@ const updateTrip = async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 };
-
-
-
-
 
 const deleteTrip = async (req, res) => {
   const id = req.params.id;
@@ -136,15 +132,14 @@ const getExpenseCategories = async (req, res) => {
   const tripID = req.params.id;
 
   try {
-    const expenses = await Expenses.find({ tripID: tripID }).populate('type');
-    const expenseTypes = expenses.map(expense => expense.type.typeName);
-    
+    const expenses = await Expenses.find({ tripID: tripID }).populate("type");
+    const expenseTypes = expenses.map((expense) => expense.type.typeName);
+
     res.status(200).json(expenseTypes);
   } catch (error) {
     res.status(404).json({ message: error.message });
   }
 };
-
 
 module.exports = {
   getAllTrips,

@@ -95,28 +95,35 @@ const deleteUser = async (req, res) => {
   }
 };
 
-
-const getAllUserTrips = async (req,res) => {
+const getAllUserTrips = async (req, res) => {
   const userID = req.params.id;
 
   try {
-    const trips = await Trips.find({participants: userID});
+    const trips = await Trips.find({ participants: userID });
 
     res.status(200).json(trips);
   } catch (error) {
     res.status(404).json({ message: error.message });
   }
-}
+};
 
 const aggregateUsersByCountry = async (req, res) => {
   try {
     const userCountsByCountry = await Users.aggregate([
-      { $group: {
-          _id: "$country",
-          count: { $sum: 1 }
+      {
+        $group: {
+          _id: '$country',
+          count: { $sum: 2 },
+        },
+      },
+      {
+        $project: {
+          _id: 0, 
+          country: "$_id",
+          count: 1
         }
       },
-      { $sort: { _id: 1 } } // Optional: Sort by country name ascending
+      { $sort: { _id: 1 } }, // sort ascend
     ]);
 
     res.status(200).json(userCountsByCountry);
