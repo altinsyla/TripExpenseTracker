@@ -76,7 +76,7 @@ const deleteFeedback = async (req, res) => {
   }
 };
 
-//Ky raport i gjen feedbacks nga nje user per nje trip te caktum
+//Ky raport i gjen sa feedbacks jon bo per ni trip edhe sa feedbacks i ka ba ni user
 const getSummaryReport = async (req, res) => {
   try {
     const totalFeedbacks = await Feedback.countDocuments({});
@@ -99,10 +99,15 @@ const getSummaryReport = async (req, res) => {
   }
 };
 
-// Ky Raport merr te gjitha te dhenat e userit per feedbacks.
+// Ky Raport i merr feedbacks t'ni userit por me tdhana t'tij t'detajume
 const getDetailedReport = async (req, res) => {
   try {
-    const feedbacks = await Feedback.find().populate('userID' && 'trip');
+    const feedbacks = await Feedback.find()
+      .populate({
+        path: 'userID', //nbaze te userID
+        select: 'username email' // e marrum username email
+      })
+      .populate('trip'); // qitu i merr krejt tdhenat e tripit
 
     res.status(200).json({
       feedbacks
@@ -111,6 +116,7 @@ const getDetailedReport = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
 module.exports = {
   getAllFeedbacks,
   getSingleFeedback,

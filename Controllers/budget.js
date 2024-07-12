@@ -81,12 +81,12 @@ const getBudgetSpentPerTrip = async (req, res) => {
         },
       },
       {
-        //lookup krijon ni array nga ni tabele qe bohet join
+        //lookup e lidh tabelen e Bugjetit me tabelen e Tripit
         $lookup: {
           from: "trips",
-          localField: "_id", //qikjo e merr id e budgetit per qata o local
-          foreignField: "_id", //qikjo e merr id e tripit dhe osht foreign
-          as: "tripDetails", // jon pjes e raportit
+          localField: "_id", //Main Table Budget (e merr id e Bugjetit)
+          foreignField: "_id", //Join Table Trips (e merr id e Tripit)
+          as: "tripDetails", // e krijon ni ALIAS si tripDetails 
         },
       },
       {

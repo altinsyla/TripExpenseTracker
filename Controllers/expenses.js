@@ -35,7 +35,6 @@ const createExpense = async (req, res) => {
   if (
     !userID ||
     !tripID ||
-    !registeredDate ||
     !type ||
     !description ||
     !quantity ||
@@ -45,26 +44,18 @@ const createExpense = async (req, res) => {
   }
 
   try {
-    const existingExpenseByRoll = await Expenses.findOne({ _id: id });
-    if (existingExpenseByRoll) {
-      return res
-        .status(409)
-        .json({ message: "Expense with this idcard number already exists" });
-    }
-
     const newExpense = await Expenses.create({
-        userID,
-        tripID,
-        registeredDate: new Date(),
-        type,
-        description,
-        quantity,
-        price,
+      userID,
+      tripID,
+      registeredDate: registeredDate || new Date(),
+      type,
+      description,
+      quantity,
+      price,
     });
 
     res.status(201).json(newExpense);
   } catch (error) {
-    // Handle internal server errors
     res.status(500).json({ message: error.message });
   }
 };
@@ -83,9 +74,9 @@ const updateExpense = async (req, res) => {
 };
 
 const deleteExpense = async (req, res) => {
-  const { id } = req.params.id;
+  const { id } = req.params;
   try {
-    await Expenses.findOneAndDelete(id);
+    await Expenses.findOneAndDelete({ _id: id });
     res.status(204).json({ message: "Expense deleted successfully" });
   } catch (error) {
     res.status(400).json({ message: error.message });

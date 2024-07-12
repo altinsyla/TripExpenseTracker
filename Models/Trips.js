@@ -10,6 +10,7 @@ const Trips = mongoose.Schema({
         required: true,
     },
     participants: [{ type: mongoose.Schema.Types.ObjectId, ref: "Users", required: true }],
+    transportTypes: [{ type: mongoose.Schema.Types.ObjectId, ref: "Transport", required: true }],
     startDate : {
         type: Date,
         required: true,

@@ -113,7 +113,7 @@ const aggregateUsersByCountry = async (req, res) => {
       {
         $group: {
           _id: '$country',
-          count: { $sum: 2 },
+          count: { $sum: 1 },
         },
       },
       {

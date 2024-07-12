@@ -26,7 +26,7 @@ const expenses = mongoose.Schema({
         required: true,
     },
     price: {
-        type: Number, // gjaje data type per money
+        type: Number,
         required: true,
     },
 })

@@ -32,7 +32,6 @@ const createTrip = async (req, res) => {
     transportType,
   } = req.body;
 
-  // Check for required fields
   if (
     !tripID ||
     !name ||
@@ -67,7 +66,6 @@ const createTrip = async (req, res) => {
 
     res.status(201).json(newTrip);
   } catch (error) {
-    // Handle internal server errors
     res.status(500).json({ message: error.message });
   }
 };
@@ -77,7 +75,6 @@ const getUpcomingTrips = async (req, res) => {
       // gjen tripet ku startdate esht me madhe se current date qe dmth ne te ardhmen
       const currentDate = new Date();
       const upcomingTrips = await Trips.find({ startDate: { $gt: currentDate } });
-
     res.json(upcomingTrips);
   } catch (err) {
     res.status(400).json({ message: err.message });
@@ -87,10 +84,10 @@ const getUpcomingTrips = async (req, res) => {
 const updateTrip = async (req, res) => {
   const id = req.params.id;
   try {
-    const updateTrip = await Trips.findOneAndUpdate({ tripID: id }, req.body, {
+    const updatedTrip = await Trips.findOneAndUpdate({ tripID: id }, req.body, {
       new: true,
     });
-    res.status(200).json(updateTrip);
+    res.status(200).json(updatedTrip);
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
