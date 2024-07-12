@@ -1,4 +1,6 @@
 const Expenses = require("../Models/Expenses");
+const Budget = require("../Models/Budget");
+const mongoose = require('mongoose');
 
 const getAllExpenses = async (req, res) => {
   try {
@@ -44,6 +46,25 @@ const createExpense = async (req, res) => {
   }
 
   try {
+    const totalBudget = await Budget.aggregate([
+      { $match: { tripID: new mongoose.Types.ObjectId(tripID)} },
+      { $group: { _id: null, total: { $sum: "$budget" } } }
+    ]);
+    const totalExpenses = await Expenses.aggregate([
+      { $match: { tripID: new mongoose.Types.ObjectId(tripID)  } },
+      { $group: { _id: null, total: { $sum: "$price" } } }
+    ]);
+
+    console.log(totalBudget);
+    console.log(totalExpenses);
+
+    const budget = totalBudget[0] ? totalBudget[0].total : 0;
+    const expenses = totalExpenses[0] ? totalExpenses[0].total : 0;
+
+    if (expenses + price > budget) {
+      return res.status(400).json({ message: "Expense exceeds the total budget" });
+    }
+    
     const newExpense = await Expenses.create({
       userID,
       tripID,
@@ -53,13 +74,13 @@ const createExpense = async (req, res) => {
       quantity,
       price,
     });
-
+    
     res.status(201).json(newExpense);
+
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
-
 
 const updateExpense = async (req, res) => {
   const { id } = req.params;
