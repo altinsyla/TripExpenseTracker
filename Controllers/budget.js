@@ -50,6 +50,7 @@ const createBudget = async (req, res) => {
 
 const updateBudget = async (req, res) => {
   const id = req.params.id;
+
   try {
     const updateBudget = await Budget.findOneAndUpdate({ _id: id }, req.body, {
       new: true,
@@ -85,8 +86,8 @@ const getBudgetSpentPerTrip = async (req, res) => {
         $lookup: {
           from: "trips",
           localField: "_id", //Main Table Budget (e merr id e Bugjetit)
-          foreignField: "_id", //Join Table Trips (e merr id e Tripit)
-          as: "tripDetails", // e krijon ni ALIAS si tripDetails 
+          foreignField: "_id", //Join Table Trips (e merr id e Tripit
+          as: "tripDetails", // e krijon ni View si tripDetails 
         },
       },
       {
@@ -97,13 +98,13 @@ const getBudgetSpentPerTrip = async (req, res) => {
         },
       },
       {
-        //i grupon si rezultat e qet lokacionin, daten e fillimit dhe daten e mbarimit
+        //i grupon si rezultat e qet name, lokacionin, daten e fillimit dhe daten e mbarimit
         $project: {
           tripName: "$tripDetails.name",
           location: "$tripDetails.location",
           startDate: "$tripDetails.startDate",
           endDate: "$tripDetails.endDate",
-          totalBudget: 1,
+          totalBudget: 1
         },
       },
     ]);
@@ -115,7 +116,7 @@ const getBudgetSpentPerTrip = async (req, res) => {
     res.status(200).json(budgetPerTrip);
   } catch (error) {
     console.error("Error fetching budget data:", error);
-    res.status(500).json({ message: "Internal server error" });
+    res.status(500).json({ message: "Internal server error"});
   }
 };
 

@@ -26,10 +26,10 @@ const createTrip = async (req, res) => {
     name,
     startDate,
     endDate,
+    participants,
     location,
     description,
-    budget,
-    transportType,
+    transportTypes,
   } = req.body;
 
   if (
@@ -37,10 +37,10 @@ const createTrip = async (req, res) => {
     !name ||
     !startDate ||
     !endDate ||
+    !participants ||
     !location ||
     !description ||
-    !budget ||
-    !transportType
+    !transportTypes
   ) {
     return res.status(400).json({ message: "Required fields are missing" });
   }
@@ -58,10 +58,10 @@ const createTrip = async (req, res) => {
       name,
       startDate,
       endDate,
+      participants,
       location,
       description,
-      budget,
-      transportType,
+      transportTypes,
     });
 
     res.status(201).json(newTrip);
@@ -72,9 +72,9 @@ const createTrip = async (req, res) => {
 
 const getUpcomingTrips = async (req, res) => {
   try {
-      // gjen tripet ku startdate esht me madhe se current date qe dmth ne te ardhmen
-      const currentDate = new Date();
-      const upcomingTrips = await Trips.find({ startDate: { $gt: currentDate } });
+    // gjen tripet ku startdate esht me madhe se current date qe dmth ne te ardhmen
+    const currentDate = new Date();
+    const upcomingTrips = await Trips.find({ startDate: { $gt: currentDate } });
     res.json(upcomingTrips);
   } catch (err) {
     res.status(400).json({ message: err.message });
@@ -126,19 +126,6 @@ const getExpensesFromSingleUser = async (req, res) => {
   }
 };
 
-const getExpenseCategories = async (req, res) => {
-  const tripID = req.params.id;
-
-  try {
-    const expenses = await Expenses.find({ tripID: tripID }).populate("type");
-    const expenseTypes = expenses.map((expense) => expense.type.typeName);
-
-    res.status(200).json(expenseTypes);
-  } catch (error) {
-    res.status(404).json({ message: error.message });
-  }
-};
-
 module.exports = {
   getAllTrips,
   getSingleTrip,
@@ -147,6 +134,5 @@ module.exports = {
   deleteTrip,
   getTripExpenses,
   getExpensesFromSingleUser,
-  getExpenseCategories,
   getUpcomingTrips,
 };

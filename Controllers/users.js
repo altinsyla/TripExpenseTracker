@@ -99,8 +99,16 @@ const getAllUserTrips = async (req, res) => {
   const userID = req.params.id;
 
   try {
-    const trips = await Trips.find({ participants: userID });
-
+    const trips = await Trips.find({ participants: userID })
+      .populate({
+        path: "participants",
+        select: "username -_id",
+      })
+      .populate({
+        path: "transportTypes",
+        select: "transportType -_id",
+      })
+      .select("-_id -tripID");
     res.status(200).json(trips);
   } catch (error) {
     res.status(404).json({ message: error.message });
@@ -112,16 +120,16 @@ const aggregateUsersByCountry = async (req, res) => {
     const userCountsByCountry = await Users.aggregate([
       {
         $group: {
-          _id: '$country',
+          _id: "$country",
           count: { $sum: 1 },
         },
       },
       {
         $project: {
-          _id: 0, 
+          _id: 0,
           country: "$_id",
-          count: 1
-        }
+          count: 1,
+        },
       },
       { $sort: { _id: 1 } }, // sort ascend
     ]);
